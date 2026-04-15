@@ -1,0 +1,8 @@
+@model ExtraParametersViewModel
+
+@foreach (var param in Model.ExtraParameterSettings)
+{
+    <div>
+        @Html.PropertyFor(x => param.Value)
+    </div>
+}

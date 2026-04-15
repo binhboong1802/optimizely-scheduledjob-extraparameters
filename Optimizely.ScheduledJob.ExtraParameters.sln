@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Optimizely.ScheduledJob.ExtraParameters", "src\Optimizely.ScheduledJob.ExtraParameters\Optimizely.ScheduledJob.ExtraParameters.csproj", "{24F7618A-77B4-42EC-A8A6-96249D879811}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{24F7618A-77B4-42EC-A8A6-96249D879811}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24F7618A-77B4-42EC-A8A6-96249D879811}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24F7618A-77B4-42EC-A8A6-96249D879811}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24F7618A-77B4-42EC-A8A6-96249D879811}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {10FADC12-B903-4BFF-AD77-4C81F594DF72}
+	EndGlobalSection
+EndGlobal

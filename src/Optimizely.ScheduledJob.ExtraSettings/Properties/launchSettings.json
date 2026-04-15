@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Optimizely.ScheduledJob.ExtraSettings": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:56676;http://localhost:56677"
+    }
+  }
+}

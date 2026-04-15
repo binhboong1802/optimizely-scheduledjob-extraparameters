@@ -1,0 +1,46 @@
+@model ExtraParametersViewModel
+
+<span class="axiom-typography--header3">Extra Parameters</span>
+<div class="scheduled-job--body">
+    <div class="extra-params-form-container">
+        <form id="extra-params-form">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; width: fit-content;">
+                @foreach (var param in Model.ExtraParameterSettings)
+                {
+                    <div>
+                        @if (param.Value is bool booValue)
+                        {
+                            <input type="checkbox" name="@param.Name" id="@(param.Name)_checkbox" value="@booValue" class="checkbox" @Html.Raw(booValue ? "checked" : string.Empty) />
+                            <input type="hidden" name="@param.Name" id="@(param.Name)_hidden" value="@booValue" title="@param.Description" />
+                            <label for="@param.Name" class="checkbox-label">@param.DisplayName</label>
+                        }
+                        else if (param.Value is int || param.Value is Int16 || param.Value is Int32 || param.Value is long
+                        || param.Value is uint || param.Value is UInt16 || param.Value is UInt32 || param.Value is ulong)
+                        {
+                            <label class="label">@param.DisplayName</label>
+                            <input type="number" name="@param.Name" value="@param.Value" class="text-input" title="@param.Description"/>
+                        }
+                        else if (param.Value is DateTime date)
+                        {
+                            <label class="label">@param.DisplayName</label>
+                            <input type="date" name="@param.Name" value="@date.ToString("yyyy-MM-dd")" class="text-input" title="@param.Description" />
+                        }
+                        else if (param.Options?.Count > 0)
+                        {
+                            <label class="label">@param.DisplayName</label>
+                            @Html.DropDownListFor(x => param.Value, param.Options, new { name = param.Name, @class = "dropdown-list", title = param.Description })
+                        }
+                        else
+                        {
+                            <label class="label">@param.DisplayName</label>
+                            <input type="text" name="@param.Name" value="@param.Value" class="text-input" title="@param.Description" />
+                        }
+                    </div>
+                }
+            </div>
+            <div class="btn-save-extra-params" style="display: block;float:right;margin-top:20px;">
+                <button data-oui-component="true" class="oui-button oui-button--highlight oui-button--default" type="submit" aria-live="polite">Save</button>
+            </div>
+        </form>
+    </div>
+</div>

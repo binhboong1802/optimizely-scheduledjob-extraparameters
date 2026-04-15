@@ -1,0 +1,78 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+	<PropertyGroup>
+		<TargetFrameworks>net6.0;net8.0;</TargetFrameworks>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+		<SolutionDir Condition="$(SolutionDir) == ''">$(MSBuildProjectDirectory)\..\</SolutionDir>
+		<TmpOutDir>$(SolutionDir)\tmp\$(TargetFramework)</TmpOutDir>
+		<PackageId>Optimizely.ScheduledJob.ExtraParameters</PackageId>
+		<Version>0.10</Version>
+		<Authors>Binh.Nguyen</Authors>
+		<Company>First Line Software</Company>
+		<Description>This is an Optimizely package to add more settings for custom scheduled job</Description>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageProjectUrl>https://github.com/binhboong1802/optimizely-scheduledjob-extraparameters</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/binhboong1802/optimizely-scheduledjob-extraparameters.git</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+	
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<PackageReference Include="EPiServer.CMS" Version="[12.4.0,13.0)" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+		<PackageReference Include="EPiServer.CMS" Version="[12.17.0,13.0)" />
+	</ItemGroup>
+	
+	<UsingTask TaskName="ZipDirectory" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+		<ParameterGroup>
+			<InputPath ParameterType="System.String" Required="true" />
+			<OutputFileName ParameterType="System.String" Required="true" />
+			<OverwriteExistingFile ParameterType="System.Boolean" Required="false" />
+		</ParameterGroup>
+		<Task>
+			<Using Namespace="System.IO" />
+			<Using Namespace="System.IO.Compression" />
+			<Code Type="Fragment" Language="cs">
+				<![CDATA[
+          if(this.OverwriteExistingFile) {
+            File.Delete(this.OutputFileName);
+          }
+          ZipFile.CreateFromDirectory(this.InputPath, this.OutputFileName);
+        ]]>
+			</Code>
+		</Task>
+	</UsingTask>
+	
+	<Target Name="CreateZip" AfterTargets="Build">
+		<MakeDir Directories="$(TmpOutDir)\content\$(Version)" />
+		<ItemGroup>
+			<ClientResources Include="$(SolutionDir)\src\$(MSBuildProjectName)\ClientResources\**\*" />
+		</ItemGroup>
+		<Copy SourceFiles="$(SolutionDir)\src\$(MSBuildProjectName)\module.config" DestinationFolder="$(TmpOutDir)\content" />
+		<Copy SourceFiles="@(ClientResources)" DestinationFiles="@(ClientResources -> '$(TmpOutDir)\content\$(Version)\ClientResources\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<XmlPoke XmlInputPath="$(TmpOutDir)\content\module.config" Query="/module/@clientResourceRelativePath" Value="$(Version)" />
+		<ZipDirectory InputPath="$(TmpOutDir)\content" OutputFileName="$(OutputPath)\$(MSBuildProjectName).zip" OverwriteExistingFile="true" />
+		<RemoveDir Directories="$(TmpOutDir)" />
+	</Target>
+
+	<ItemGroup>
+		<Content Include="$(OutputPath)\$(MSBuildProjectName).zip">
+			<Pack>true</Pack>
+			<PackagePath>content\modules\_protected\$(MSBuildProjectName)\;contentFiles\any\any\modules\_protected\$(MSBuildProjectName)\</PackagePath>
+			<PackageCopyToOutput>true</PackageCopyToOutput>
+			<BuildAction>None</BuildAction>
+		</Content>
+		<Content Include="$(SolutionDir)\src\msbuild\CopyZipFiles.targets">
+			<Pack>true</Pack>
+			<PackagePath>build\net6.0\$(MSBuildProjectName).targets;build\net8.0\$(MSBuildProjectName).targets</PackagePath>
+			<PackageCopyToOutput>true</PackageCopyToOutput>
+			<BuildAction>None</BuildAction>
+		</Content>		
+	</ItemGroup>
+</Project>
