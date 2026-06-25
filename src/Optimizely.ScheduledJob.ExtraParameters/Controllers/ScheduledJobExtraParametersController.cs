@@ -19,21 +19,22 @@ namespace Optimizely.ScheduledJob.ExtraParameters.Controllers
         public IActionResult GetView(Guid scheduledJobId)
         {
             var model = _scheduledJobExtraParametersService.GetExtraParametersViewModel(scheduledJobId);
-            if (model != null) 
+            if (model != null)
             {
                 return PartialView("_EditView", model);
             }
 
-            return Content(string.Empty);
+            return NoContent();
 
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Save(Guid scheduledJobId, IFormCollection form)
         {
             _scheduledJobExtraParametersService.SaveExtraParameters(scheduledJobId, form);
 
-            return Content(string.Empty);
+            return Ok();
         }
 
         public IActionResult HasSupportForExtraParameters(Guid scheduledJobId)

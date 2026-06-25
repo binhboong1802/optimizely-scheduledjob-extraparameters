@@ -21,7 +21,7 @@ namespace Optimizely.ScheduledJob.ExtraParameters.Services
                 ?? _factory.CreateStore(typeof(ScheduledJobExtraParametersData));
 
             var dynamicData = store.Find<ScheduledJobExtraParametersData>(nameof(ScheduledJobExtraParametersData.ScheduledJobId), scheduledJobInstanceId).FirstOrDefault();
-            if (string.IsNullOrWhiteSpace(dynamicData?.Value))
+            if (!string.IsNullOrWhiteSpace(dynamicData?.Value))
             {
                 return JsonConvert.DeserializeObject<T>(dynamicData.Value);
             }
