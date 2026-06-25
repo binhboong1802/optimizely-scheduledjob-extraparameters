@@ -8,9 +8,14 @@
 		<TmpOutDir>$(SolutionDir)\tmp\$(TargetFramework)</TmpOutDir>
 		<PackageId>OptiScheduledJob.ExtraParameters</PackageId>
 		<Version>1.0</Version>
-		<Authors>Binh.Nguyen</Authors>
+		<Authors>Binh Nguyen</Authors>
 		<Company>First Line Software</Company>
-		<Description>This is an Optimizely package to add more settings for custom scheduled job</Description>
+		<Copyright>Copyright © 2026 Binh Nguyen</Copyright>
+		<Title>Scheduled Job Extra Parameters for Optimizely CMS 12</Title>
+		<Description>Attach strongly-typed extra configuration parameters to custom Optimizely CMS 12 scheduled jobs and edit them directly from the admin Scheduled Jobs screen. Values are persisted in the Dynamic Data Store and read back inside the job at execution time.</Description>
+		<PackageTags>Optimizely;EPiServer;CMS;ScheduledJob;ExtraParameters;configuration;settings;admin</PackageTags>
+		<PackageReleaseNotes>See CHANGELOG.md at the project URL for release notes.</PackageReleaseNotes>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/binhboong1802/optimizely-scheduledjob-extraparameters</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/binhboong1802/optimizely-scheduledjob-extraparameters.git</RepositoryUrl>
@@ -20,6 +25,10 @@
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
     </ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\..\README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
 	
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
 		<PackageReference Include="EPiServer.CMS" Version="[12.4.0,13.0)" />
