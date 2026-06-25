@@ -1,4 +1,4 @@
-# Optimizely.ScheduledJob.ExtraParameters
+# OptiScheduledJob.ExtraParameters
 
 An add-on for **Optimizely CMS 12** (EPiServer) that lets you attach custom configuration
 parameters to your scheduled jobs and edit them directly from the **Admin → Scheduled Jobs**
@@ -29,13 +29,13 @@ integer types (number), floating-point types `decimal` / `double` / `float` (num
 1. Add the package from the Optimizely NuGet feed:
 
    ```sh
-   dotnet add package Optimizely.ScheduledJob.ExtraParameters
+   dotnet add package OptiScheduledJob.ExtraParameters
    ```
 
 2. Register the module in your site's `Startup.cs`:
 
    ```csharp
-   using Optimizely.ScheduledJob.ExtraParameters.Infrastructure.Configuration;
+   using OptiScheduledJob.ExtraParameters.Infrastructure.Configuration;
 
    public void ConfigureServices(IServiceCollection services)
    {
@@ -56,8 +56,8 @@ Create a class that derives from `ScheduledJobExtraParametersBase`. Decorate eac
 `[ExtraParametersPropertyDisplay]` to control its label, help text, and (optionally) dropdown options.
 
 ```csharp
-using Optimizely.ScheduledJob.ExtraParameters.Attributes;
-using Optimizely.ScheduledJob.ExtraParameters.Models;
+using OptiScheduledJob.ExtraParameters.Attributes;
+using OptiScheduledJob.ExtraParameters.Models;
 
 public class MyJobExtraParameters : ScheduledJobExtraParametersBase
 {
@@ -95,7 +95,7 @@ point `ExtraParameterDefinition` at the settings class:
 
 ```csharp
 using EPiServer.Scheduler;
-using Optimizely.ScheduledJob.ExtraParameters.Attributes;
+using OptiScheduledJob.ExtraParameters.Attributes;
 
 [ScheduledPlugInWithExtraParameters(
     DisplayName = "My Custom Job",
@@ -114,7 +114,7 @@ form appears below the standard job controls.
 Inject `IScheduledJobExtraParametersDataService` and load the saved settings by the job's instance id:
 
 ```csharp
-using Optimizely.ScheduledJob.ExtraParameters.Services;
+using OptiScheduledJob.ExtraParameters.Services;
 
 public class MyCustomJob : ScheduledJobBase
 {
