@@ -135,6 +135,20 @@ public class MyCustomJob : ScheduledJobBase
 }
 ```
 
+## How it looks in the admin
+
+Once your job carries the attribute, open **Admin → Scheduled Jobs → your job**. Below the
+standard "When to run" controls, an **Extra Parameters** form appears automatically — each
+property rendered with the right input for its type (text box, number, date picker, checkbox
+or dropdown), one per row:
+
+![The Extra Parameters form rendered under a scheduled job](docs/images/extra-parameters-form.png)
+
+Hit **Save** and the values are converted to their CLR types, stored in the Dynamic Data
+Store, and a toast notification confirms the result:
+
+![Save confirmation notification](docs/images/save-notification.png)
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
