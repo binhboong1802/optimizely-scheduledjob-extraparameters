@@ -22,7 +22,7 @@ integer types (number), floating-point types `decimal` / `double` / `float` (num
 ## Requirements
 
 - Optimizely CMS (`EPiServer.CMS`) **12.x**
-- .NET **6.0** or **8.0**
+- .NET **6.0**, **8.0**, **9.0** or **10.0**
 
 ## Installation
 

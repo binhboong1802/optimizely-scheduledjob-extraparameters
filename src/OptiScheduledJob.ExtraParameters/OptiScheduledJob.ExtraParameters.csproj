@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 	<PropertyGroup>
-		<TargetFrameworks>net6.0;net8.0;</TargetFrameworks>
+		<TargetFrameworks>net6.0;net8.0;net9.0;net10.0;</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>disable</Nullable>
 		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
@@ -28,7 +28,15 @@
 	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
 		<PackageReference Include="EPiServer.CMS" Version="[12.17.0,13.0)" />
 	</ItemGroup>
-	
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+		<PackageReference Include="EPiServer.CMS" Version="[12.17.0,13.0)" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+		<PackageReference Include="EPiServer.CMS" Version="[12.34.4,13.0)" />
+	</ItemGroup>
+
 	<UsingTask TaskName="ZipDirectory" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
 		<ParameterGroup>
 			<InputPath ParameterType="System.String" Required="true" />
@@ -70,7 +78,7 @@
 		</Content>
 		<Content Include="$(SolutionDir)\src\msbuild\CopyZipFiles.targets">
 			<Pack>true</Pack>
-			<PackagePath>build\net6.0\$(MSBuildProjectName).targets;build\net8.0\$(MSBuildProjectName).targets</PackagePath>
+			<PackagePath>build\net6.0\$(MSBuildProjectName).targets;build\net8.0\$(MSBuildProjectName).targets;build\net9.0\$(MSBuildProjectName).targets;build\net10.0\$(MSBuildProjectName).targets</PackagePath>
 			<PackageCopyToOutput>true</PackageCopyToOutput>
 			<BuildAction>None</BuildAction>
 		</Content>		
