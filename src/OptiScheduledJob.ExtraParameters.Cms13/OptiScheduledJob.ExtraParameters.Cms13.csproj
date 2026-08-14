@@ -1,0 +1,101 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+	<PropertyGroup>
+		<!-- CMS 13 requires .NET 10; unlike the CMS 12 line there is nothing to multi-target. -->
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+
+		<!-- Assembly, root namespace and protected-module name stay identical to the CMS 12 line so
+		     consumer code, the module.config module name and the existing Dynamic Data Store rows all
+		     carry over unchanged on upgrade. Only the project file name differs. -->
+		<AssemblyName>OptiScheduledJob.ExtraParameters</AssemblyName>
+		<RootNamespace>OptiScheduledJob.ExtraParameters</RootNamespace>
+		<ModuleName>OptiScheduledJob.ExtraParameters</ModuleName>
+
+		<SolutionDir Condition="$(SolutionDir) == ''">$(MSBuildProjectDirectory)\..\..\</SolutionDir>
+		<!-- Kept separate from the CMS 12 project's tmp folder so both lines can build side by side. -->
+		<TmpOutDir>$(SolutionDir)\tmp\cms13\$(TargetFramework)</TmpOutDir>
+
+		<!-- Same PackageId as the CMS 12 line, different major version: 1.x = CMS 12, 2.x = CMS 13.
+		     A CMS 12 host that picks up 2.x fails restore on the EPiServer.CMS [13.0.0,14.0) range,
+		     which is the intended, loud failure. -->
+		<PackageId>OptiScheduledJob.ExtraParameters</PackageId>
+		<Version>2.0.0</Version>
+		<Authors>Binh Nguyen</Authors>
+		<Company>First Line Software</Company>
+		<Copyright>Copyright © 2026 Binh Nguyen</Copyright>
+		<Title>Scheduled Job Extra Parameters for Optimizely CMS 13</Title>
+		<Description>Attach strongly-typed extra configuration parameters to custom Optimizely CMS 13 scheduled jobs and edit them directly from the admin Scheduled Jobs screen. Values are persisted in the Dynamic Data Store and read back inside the job at execution time. For Optimizely CMS 12, use the 1.x versions of this package.</Description>
+		<PackageTags>Optimizely;EPiServer;CMS;CMS13;ScheduledJob;ExtraParameters;configuration;settings;admin</PackageTags>
+		<PackageReleaseNotes>See CHANGELOG.md at the project URL for release notes.</PackageReleaseNotes>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageProjectUrl>https://github.com/binhboong1802/optimizely-scheduledjob-extraparameters</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/binhboong1802/optimizely-scheduledjob-extraparameters.git</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\..\README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="EPiServer.CMS" Version="[13.0.0,14.0)" />
+	</ItemGroup>
+
+	<UsingTask TaskName="ZipDirectory" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+		<ParameterGroup>
+			<InputPath ParameterType="System.String" Required="true" />
+			<OutputFileName ParameterType="System.String" Required="true" />
+			<OverwriteExistingFile ParameterType="System.Boolean" Required="false" />
+		</ParameterGroup>
+		<Task>
+			<Using Namespace="System.IO" />
+			<Using Namespace="System.IO.Compression" />
+			<Code Type="Fragment" Language="cs">
+				<![CDATA[
+          if(this.OverwriteExistingFile) {
+            File.Delete(this.OutputFileName);
+          }
+          ZipFile.CreateFromDirectory(this.InputPath, this.OutputFileName);
+        ]]>
+			</Code>
+		</Task>
+	</UsingTask>
+
+	<!-- Same packaging mechanism as the CMS 12 line, but keyed off $(ModuleName) and
+	     $(MSBuildProjectDirectory) instead of $(MSBuildProjectName): the project file is named
+	     ".Cms13" while the shipped module must keep the plain name. -->
+	<Target Name="CreateZip" AfterTargets="Build">
+		<MakeDir Directories="$(TmpOutDir)\content\$(Version)" />
+		<ItemGroup>
+			<ClientResources Include="$(MSBuildProjectDirectory)\ClientResources\**\*" />
+		</ItemGroup>
+		<Copy SourceFiles="$(MSBuildProjectDirectory)\module.config" DestinationFolder="$(TmpOutDir)\content" />
+		<Copy SourceFiles="@(ClientResources)" DestinationFiles="@(ClientResources -> '$(TmpOutDir)\content\$(Version)\ClientResources\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<XmlPoke XmlInputPath="$(TmpOutDir)\content\module.config" Query="/module/@clientResourceRelativePath" Value="$(Version)" />
+		<ZipDirectory InputPath="$(TmpOutDir)\content" OutputFileName="$(OutputPath)\$(ModuleName).zip" OverwriteExistingFile="true" />
+		<RemoveDir Directories="$(TmpOutDir)" />
+	</Target>
+
+	<ItemGroup>
+		<Content Include="$(OutputPath)\$(ModuleName).zip">
+			<Pack>true</Pack>
+			<PackagePath>content\modules\_protected\$(ModuleName)\;contentFiles\any\any\modules\_protected\$(ModuleName)\</PackagePath>
+			<PackageCopyToOutput>true</PackageCopyToOutput>
+			<BuildAction>None</BuildAction>
+		</Content>
+		<!-- net10.0 only - CMS 13 does not run on anything older. -->
+		<Content Include="$(SolutionDir)\src\msbuild\CopyZipFiles.targets">
+			<Pack>true</Pack>
+			<PackagePath>build\net10.0\$(ModuleName).targets</PackagePath>
+			<PackageCopyToOutput>true</PackageCopyToOutput>
+			<BuildAction>None</BuildAction>
+		</Content>
+	</ItemGroup>
+</Project>

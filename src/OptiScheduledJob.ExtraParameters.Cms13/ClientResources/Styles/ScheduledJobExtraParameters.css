@@ -1,0 +1,120 @@
+/* ==========================================================================
+   Extra Parameters edit form (rendered by _EditView.cshtml)
+   ========================================================================== */
+
+.extra-params-form-container .extra-params-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    max-width: 600px;
+}
+
+.extra-params-form-container .extra-param-row {
+    display: flex;
+    flex-direction: column;
+}
+
+.extra-params-form-container .extra-param-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Force every editable field (text/number/date inputs and the dropdown) to share the
+   same box model so their width, height and border line up exactly. */
+.extra-params-form-container .text-input,
+.extra-params-form-container select.dropdown-list {
+    width: 100%;
+    height: 44px;
+    padding: 8px 12px;
+    border: 1px solid #d4d4d4;
+    border-radius: 4px;
+    background-color: #fff;
+    font-size: 14px;
+    color: #333;
+    box-sizing: border-box;
+}
+
+/* Replace the native select chevron with a consistent caret on the right. */
+.extra-params-form-container select.dropdown-list {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 36px;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4L6 8L10 4' fill='none' stroke='%23666' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 12px;
+}
+
+.extra-params-form-container .btn-save-extra-params {
+    display: block;
+    float: right;
+    margin-top: 20px;
+}
+
+/* ==========================================================================
+   Toast notifications (raised by ScheduledJobExtraParameters.js).   
+   .extra-params-form-container.
+   ========================================================================== */
+
+.extra-params-toast-container {
+    position: fixed;
+    top: 80px;
+    right: 24px;
+    z-index: 100000;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.extra-params-toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 320px;
+  max-width: 440px;
+  padding: 14px 16px;
+  background: #edf7ed;
+  border: 1px solid #4cae4f;
+  border-radius: 6px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  font-size: 14px;
+  color: #333;
+  animation: extra-params-toast-in .2s ease-out;
+}
+
+.extra-params-toast.error {
+    border-color: #c62828;
+}
+
+.extra-params-toast__icon {
+  flex: 0 0 auto;
+  display: flex;
+  color: #4cae4f;
+}
+
+.extra-params-toast__msg {
+    flex: 1 1 auto;
+}
+
+.extra-params-toast__close {
+    flex: 0 0 auto;
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-size: 20px;
+    line-height: 1;
+    color: #888;
+    padding: 0 2px;
+}
+
+.extra-params-toast__close:hover {
+    color: #000;
+}
+
+@keyframes extra-params-toast-in {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}

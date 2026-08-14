@@ -1,8 +1,10 @@
 # OptiScheduledJob.ExtraParameters
 
-An add-on for **Optimizely CMS 12** (EPiServer) that lets you attach custom configuration
+An add-on for **Optimizely CMS** (EPiServer) that lets you attach custom configuration
 parameters to your scheduled jobs and edit them directly from the **Admin → Scheduled Jobs**
 screen — something the stock CMS does not support out of the box.
+
+Supports **CMS 12** and **CMS 13**.
 
 ## Why use it
 
@@ -19,17 +21,36 @@ integer types (number), floating-point types `decimal` / `double` / `float` (num
 `DateTime` (date picker), enumerable options (dropdown), and `string` / everything else
 (text box).
 
-## Requirements
+## Which version do I need?
 
-- Optimizely CMS (`EPiServer.CMS`) **12.x**
-- .NET **6.0**, **8.0**, **9.0** or **10.0**
+The add-on ships as **one package with two release lines**, split by CMS major version. Pick the
+line that matches your site — the API and everything in [Usage](#usage) is the same in both.
+
+| Package version | Optimizely CMS | .NET                   |
+| --------------- | -------------- | ---------------------- |
+| **1.x**         | 12.x           | 6.0 / 8.0 / 9.0 / 10.0 |
+| **2.x**         | 13.x           | 10.0                   |
+
+Each line pins its own `EPiServer.CMS` version range, so installing the wrong one fails NuGet restore
+with a clear version conflict rather than misbehaving at runtime.
 
 ## Installation
 
-1. Add the package from the Optimizely NuGet feed:
+1. Add the package from the **Optimizely NuGet feed** (https://nuget.optimizely.com/). It is
+   published there, not on nuget.org, so register that feed as a source first:
 
    ```sh
-   dotnet add package OptiScheduledJob.ExtraParameters
+   dotnet nuget add source https://api.nuget.optimizely.com/v3/index.json -n optimizely
+   ```
+
+   Then install the line matching your CMS:
+
+   ```sh
+   # Optimizely CMS 12
+   dotnet add package OptiScheduledJob.ExtraParameters --version "[1.0,2.0)"
+
+   # Optimizely CMS 13
+   dotnet add package OptiScheduledJob.ExtraParameters --version "[2.0,3.0)"
    ```
 
 2. Register the module in your site's `Startup.cs`:
@@ -49,6 +70,8 @@ That's it — the package ships its own protected client module, so no manual fi
 `module.config` editing is required.
 
 ## Usage
+
+Identical on CMS 12 and CMS 13.
 
 ### 1. Define a settings class
 
@@ -90,8 +113,8 @@ public class MyJobExtraParameters : ScheduledJobExtraParametersBase
 
 ### 2. Attach it to your scheduled job
 
-Use `[ScheduledPlugInWithExtraParameters]` (a drop-in replacement for `[ScheduledPlugIn]`) and
-point `ExtraParameterDefinition` at the settings class:
+Use `[ScheduledPlugInWithExtraParameters]` in place of the stock job attribute and point
+`ExtraParameterDefinition` at the settings class:
 
 ```csharp
 using EPiServer.Scheduler;
@@ -105,6 +128,10 @@ public class MyCustomJob : ScheduledJobBase
     // ...
 }
 ```
+
+The attribute carries the usual job settings (`DisplayName`, `Description`, `GUID`) on both lines —
+it extends `ScheduledPlugInAttribute` on 1.x and `ScheduledJobAttribute` on 2.x, since CMS 13
+obsoleted the former. Your job class inherits `ScheduledJobBase` either way.
 
 After building and running, open **Admin → Scheduled Jobs → My Custom Job**; an "Extra Parameters"
 form appears below the standard job controls.
@@ -148,6 +175,25 @@ Hit **Save** and the values are converted to their CLR types, stored in the Dyna
 Store, and a toast notification confirms the result:
 
 ![Save confirmation notification](docs/images/save-notification.png)
+
+*(Screenshots are from the CMS 12 admin UI.)*
+
+## Building from source
+
+There are no automated tests. Both lines build from the repository root:
+
+```sh
+dotnet build OptiScheduledJob.ExtraParameters.sln
+
+# CMS 12 line — src/OptiScheduledJob.ExtraParameters
+dotnet pack src/OptiScheduledJob.ExtraParameters/OptiScheduledJob.ExtraParameters.csproj -c Release
+
+# CMS 13 line — src/OptiScheduledJob.ExtraParameters.Cms13
+dotnet pack src/OptiScheduledJob.ExtraParameters.Cms13/OptiScheduledJob.ExtraParameters.Cms13.csproj -c Release
+```
+
+Bump `<Version>` in the relevant `.csproj` before producing a new package — keep 1.x for CMS 12 and
+2.x for CMS 13.
 
 ## License
 

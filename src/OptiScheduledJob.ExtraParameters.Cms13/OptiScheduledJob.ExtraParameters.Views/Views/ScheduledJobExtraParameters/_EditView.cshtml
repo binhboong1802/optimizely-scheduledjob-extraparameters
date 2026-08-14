@@ -1,0 +1,60 @@
+@model ExtraParametersViewModel
+
+<span class="axiom-typography--header3">Extra Parameters</span>
+<div class="scheduled-job--body">
+    <div class="extra-params-form-container">
+        <form id="extra-params-form">
+            @Html.AntiForgeryToken()
+            <div class="extra-params-grid">
+                @foreach (var param in Model.ExtraParameterSettings)
+                {
+                    <div class="extra-param-row">
+                        @if (param.Options?.Count > 0)
+                        {
+                            var selectedValue = param.Value?.ToString();
+                            <label class="label">@param.DisplayName</label>
+                            <select name="@param.Name" class="dropdown-list" title="@param.Description">
+                                @foreach (var option in param.Options)
+                                {
+                                    <option value="@option.Value" selected="@(option.Value == selectedValue)">@option.Text</option>
+                                }
+                            </select>
+                        }
+                        else if (param.Value is bool booValue)
+                        {
+                            <div class="extra-param-checkbox">
+                                <input type="hidden" name="@param.Name" value="false" />
+                                <input type="checkbox" name="@param.Name" id="@param.Name" value="true" class="checkbox" title="@param.Description" @Html.Raw(booValue ? "checked" : string.Empty) />
+                                <label for="@param.Name" class="checkbox-label">@param.DisplayName</label>
+                            </div>
+                        }
+                        else if (param.Value is int || param.Value is Int16 || param.Value is Int32 || param.Value is long
+                        || param.Value is uint || param.Value is UInt16 || param.Value is UInt32 || param.Value is ulong)
+                        {
+                            <label class="label">@param.DisplayName</label>
+                            <input type="number" step="1" name="@param.Name" value="@Convert.ToString(param.Value, CultureInfo.InvariantCulture)" class="text-input" title="@param.Description"/>
+                        }
+                        else if (param.Value is decimal || param.Value is double || param.Value is float)
+                        {
+                            <label class="label">@param.DisplayName</label>
+                            <input type="number" step="any" name="@param.Name" value="@Convert.ToString(param.Value, CultureInfo.InvariantCulture)" class="text-input" title="@param.Description"/>
+                        }
+                        else if (param.Value is DateTime date)
+                        {
+                            <label class="label">@param.DisplayName</label>
+                            <input type="date" name="@param.Name" value="@date.ToString("yyyy-MM-dd")" class="text-input" title="@param.Description" />
+                        }
+                        else
+                        {
+                            <label class="label">@param.DisplayName</label>
+                            <input type="text" name="@param.Name" value="@param.Value" class="text-input" title="@param.Description" />
+                        }
+                    </div>
+                }
+            </div>
+            <div class="btn-save-extra-params">
+                <button data-oui-component="true" class="oui-button oui-button--highlight oui-button--default" type="submit" aria-live="polite">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
