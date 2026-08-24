@@ -7,7 +7,7 @@
 		<SolutionDir Condition="$(SolutionDir) == ''">$(MSBuildProjectDirectory)\..\</SolutionDir>
 		<TmpOutDir>$(SolutionDir)\tmp\$(TargetFramework)</TmpOutDir>
 		<PackageId>OptiScheduledJob.ExtraParameters</PackageId>
-		<Version>1.0</Version>
+		<Version>1.0.1</Version>
 		<Authors>Binh Nguyen</Authors>
 		<Company>First Line Software</Company>
 		<Copyright>Copyright © 2026 Binh Nguyen</Copyright>
